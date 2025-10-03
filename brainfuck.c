@@ -27,6 +27,7 @@ void move_pointer(int64_t offset) {
             fprintf(stderr, "Failed to allocate %zu bytes of memory\n", new_memory_length);
             return;
         }
+        memset(memory, 0, new_memory_length - memory_length);
 
         memory_length = new_memory_length;
 
@@ -43,6 +44,7 @@ void move_pointer(int64_t offset) {
             fprintf(stderr, "Failed to allocate %zu bytes of memory\n", new_memory_length);
             return;
         }
+        memset(memory + memory_length, 0, new_memory_length - memory_length);
 
         memory_length = new_memory_length;
     }
