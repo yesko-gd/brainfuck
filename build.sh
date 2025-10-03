@@ -1,1 +1,1 @@
-gcc -std=c23 -Wall -Wextra -pedantic *.c -o brainfuck
+gcc -std=c23 -Wall -Wextra -pedantic *.c -o bin/brainfuck
