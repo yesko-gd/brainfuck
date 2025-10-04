@@ -66,8 +66,8 @@ size_t find_matching_bracket(const size_t src_len, const char *src, size_t i, Br
     uint32_t nest = 1;
 
     while (nest) {
-        if (!i || i >= src_len) {
-            fprintf(stderr, "%s bracket at %zu has no counterpart\n", type == BRACKET_CLOSED ? "Closing" : "Opening", pointer);
+        if ((!i && type < 0) || i >= src_len) {
+            fprintf(stderr, "%s bracket at %zu has no counterpart\n", type == BRACKET_CLOSED ? "Closing" : "Opening", i);
             return 0;
         }
 
