@@ -3,6 +3,12 @@
 #include <memory.h>
 #include <limits.h>
 
+#ifdef WIN32
+
+#else // WIN32
+#include <termios.h>
+#endif // WIN32
+
 typedef enum {
     BRACKET_OPEN = 1,
     BRACKET_CLOSED = -1
@@ -144,6 +150,16 @@ int interpret(const size_t len, const char *src) {
 
     pointer = memory_length / 2;
 
+#ifdef WIN32
+
+#else
+    struct termios t;
+    tcgetattr(0, &t);
+    t.c_lflag &= ~ECHO;
+    t.c_lflag &= ~ICANON;
+    tcsetattr(0, TCSANOW, &t);
+#endif
+
     for (size_t i = 0; i < len; i++) {
         bool should_exit = parse_ch(len, src, &i);
         if (should_exit) {
@@ -152,6 +168,15 @@ int interpret(const size_t len, const char *src) {
     }
 
     printf("\n");
+
+#ifdef WIN32
+
+#else
+    tcgetattr(0, &t);
+    t.c_lflag |= ECHO;
+    t.c_lflag |= ICANON;
+    tcsetattr(0, TCSANOW, &t);
+#endif
 
     return 0;
 }
