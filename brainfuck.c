@@ -3,11 +3,12 @@
 #include <memory.h>
 #include <limits.h>
 
-#ifdef WIN32
-
-#else // WIN32
+#ifdef _WIN32
+#include <conio.h>
+#include <windows.h>
+#else // _WIN32
 #include <termios.h>
-#endif // WIN32
+#endif // _WIN32
 
 typedef enum {
     BRACKET_OPEN = 1,
@@ -126,7 +127,13 @@ bool parse_ch(const size_t src_len, const char *src, size_t *i) {
             fputc(memory[pointer], stdout);
             break;
         case ',':
-            memory[pointer] = fgetc(stdin);
+            char input = 0;
+            #ifdef WIN32
+            input = _getch();
+            #else
+            input = fgetc(stdin);
+            #endif // WIN32
+            memory[pointer] = input;
             break;
         case '[':
             if (!memory[pointer]) {
@@ -154,15 +161,18 @@ int interpret(const size_t len, const char *src) {
 
     pointer = memory_length / 2;
 
-#ifdef WIN32
-
+#ifdef _WIN32
+    HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE); 
+    DWORD mode = 0;
+    GetConsoleMode(hStdin, &mode);
+    SetConsoleMode(hStdin, mode & (~ENABLE_ECHO_INPUT));
 #else
     struct termios t;
     tcgetattr(0, &t);
     t.c_lflag &= ~ECHO;
     t.c_lflag &= ~ICANON;
     tcsetattr(0, TCSANOW, &t);
-#endif
+#endif // !WIN32
 
     for (size_t i = 0; i < len; i++) {
         bool should_exit = parse_ch(len, src, &i);
@@ -173,8 +183,10 @@ int interpret(const size_t len, const char *src) {
 
     printf("\n");
 
-#ifdef WIN32
-
+#ifdef _WIN32
+    hStdin = GetStdHandle(STD_INPUT_HANDLE); 
+    GetConsoleMode(hStdin, &mode);
+    SetConsoleMode(hStdin, mode & (~ENABLE_ECHO_INPUT));
 #else
     tcgetattr(0, &t);
     t.c_lflag |= ECHO;
