@@ -1,2 +1,3 @@
 *.bf
 bin/
+build.sh
