@@ -28,13 +28,15 @@ void move_pointer(int64_t offset) {
 
     if (offset < 0 && pointer < (size_t)-offset) {
         size_t new_memory_length = memory_length - offset - pointer;
-        memory = realloc(memory, new_memory_length);
-        if (!memory) {
+        uint8_t *new_memory = realloc(memory, new_memory_length);
+        if (!new_memory) {
             fprintf(stderr, "Failed to allocate %zu bytes of memory\n", new_memory_length);
             return;
         }
-        memset(memory, 0, new_memory_length - memory_length);
+        memset(new_memory, 0, new_memory_length - memory_length);
+        memcpy(new_memory, memory, memory_length);
 
+        memory = new_memory;
         memory_length = new_memory_length;
 
         new_pointer = 0;
@@ -45,13 +47,15 @@ void move_pointer(int64_t offset) {
 
     if (new_pointer >= memory_length) {
         size_t new_memory_length = new_pointer + 1;
-        memory = realloc(memory, new_memory_length);
-        if (!memory) {
+        uint8_t *new_memory = realloc(memory, new_memory_length);
+        if (!new_memory) {
             fprintf(stderr, "Failed to allocate %zu bytes of memory\n", new_memory_length);
             return;
         }
-        memset(memory + memory_length, 0, new_memory_length - memory_length);
+        memset(new_memory + memory_length, 0, new_memory_length - memory_length);
+        memcpy(new_memory, memory, memory_length);
 
+        memory = new_memory;
         memory_length = new_memory_length;
     }
 
