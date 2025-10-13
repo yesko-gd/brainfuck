@@ -3,12 +3,12 @@
 #include <memory.h>
 #include <limits.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <conio.h>
 #include <windows.h>
-#else // WIN32
+#else // _WIN32
 #include <termios.h>
-#endif // WIN32
+#endif // _WIN32
 
 typedef enum {
     BRACKET_OPEN = 1,
@@ -157,7 +157,7 @@ int interpret(const size_t len, const char *src) {
 
     pointer = memory_length / 2;
 
-#ifdef WIN32
+#ifdef _WIN32
     HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE); 
     DWORD mode = 0;
     GetConsoleMode(hStdin, &mode);
@@ -179,7 +179,7 @@ int interpret(const size_t len, const char *src) {
 
     printf("\n");
 
-#ifdef WIN32
+#ifdef _WIN32
     hStdin = GetStdHandle(STD_INPUT_HANDLE); 
     GetConsoleMode(hStdin, &mode);
     SetConsoleMode(hStdin, mode & (~ENABLE_ECHO_INPUT));
