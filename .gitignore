@@ -1,3 +1,4 @@
 *.bf
 bin/
+*.o
 build.sh

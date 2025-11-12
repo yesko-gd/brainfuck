@@ -1,4 +1,13 @@
 CC=gcc
+CFLAGS=-std=c23
+BIN=bin/brainfuck
+SRC=$(wildcard *.c)
+OBJ=$(patsubst %.c,%.o,$(SRC))
 
-brainfuck:
-	$(CC) -std=c23 *.c -o bin/brainfuck
+all: $(BIN)
+
+$(BIN): $(OBJ)
+	$(CC) $^ -o $@
+
+%.o:%.c
+	$(CC) -c $(CFLAGS) $^ -o $@
